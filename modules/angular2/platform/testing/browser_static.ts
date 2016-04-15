@@ -9,8 +9,6 @@ import {DirectiveResolver, ViewResolver} from 'angular2/compiler';
 import {BROWSER_APP_COMMON_PROVIDERS} from 'angular2/src/platform/browser_common';
 import {BrowserDomAdapter} from 'angular2/src/platform/browser/browser_adapter';
 
-import {AnimationBuilder} from 'angular2/src/animate/animation_builder';
-import {MockAnimationBuilder} from 'angular2/src/mock/animation_builder_mock';
 import {MockDirectiveResolver} from 'angular2/src/mock/directive_resolver_mock';
 import {MockViewResolver} from 'angular2/src/mock/view_resolver_mock';
 import {MockLocationStrategy} from 'angular2/src/mock/mock_location_strategy';
@@ -61,8 +59,7 @@ export const ADDITIONAL_TEST_BROWSER_PROVIDERS: Array<any /*Type | Provider | an
       Log,
       TestComponentBuilder,
       /*@ts2dart_Provider*/ {provide: NgZone, useFactory: createNgZone},
-      /*@ts2dart_Provider*/ {provide: LocationStrategy, useClass: MockLocationStrategy},
-      /*@ts2dart_Provider*/ {provide: AnimationBuilder, useClass: MockAnimationBuilder},
+      /*@ts2dart_Provider*/ {provide: LocationStrategy, useClass: MockLocationStrategy}
     ];
 
 /**

@@ -19,10 +19,11 @@ import {DOM} from 'angular2/src/platform/dom/dom_adapter';
 import {DomEventsPlugin} from 'angular2/src/platform/dom/events/dom_events';
 import {KeyEventsPlugin} from 'angular2/src/platform/dom/events/key_events';
 import {DOCUMENT} from 'angular2/src/platform/dom/dom_tokens';
+import {WebAnimationsDriver} from 'angular2/src/platform/dom/animation/web_animations_driver';
+import {AnimationDriver, NoOpAnimationDriver} from 'angular2/src/core/render/animation_driver';
+import {AnimationQueue} from 'angular2/src/core/animation/animation_queue';
 import {DomRootRenderer, DomRootRenderer_} from 'angular2/src/platform/dom/dom_renderer';
 import {DomSharedStylesHost, SharedStylesHost} from 'angular2/src/platform/dom/shared_styles_host';
-import {BrowserDetails} from "angular2/src/animate/browser_details";
-import {AnimationBuilder} from "angular2/src/animate/animation_builder";
 import {BrowserDomAdapter} from './browser/browser_adapter';
 import {BrowserGetTestability} from 'angular2/src/platform/browser/testability';
 import {CachedXHR} from 'angular2/src/platform/browser/xhr_cache';
@@ -70,6 +71,13 @@ function _document(): any {
   return DOM.defaultDoc();
 }
 
+function _resolveDefaultAnimationDriver(): AnimationDriver {
+  if (DOM.supportsWebAnimation()) {
+    return new WebAnimationsDriver();
+  }
+  return new NoOpAnimationDriver();
+}
+
 /**
  * A set of providers to initialize an Angular application in a web browser.
  *
@@ -90,10 +98,10 @@ export const BROWSER_APP_COMMON_PROVIDERS: Array<any /*Type | Provider | any[]*/
       /* @ts2dart_Provider */ {provide: DomRootRenderer, useClass: DomRootRenderer_},
       /* @ts2dart_Provider */ {provide: RootRenderer, useExisting: DomRootRenderer},
       /* @ts2dart_Provider */ {provide: SharedStylesHost, useExisting: DomSharedStylesHost},
+      /* @ts2dart_Provider */ {provide: AnimationDriver, useFactory: _resolveDefaultAnimationDriver},
+      /* @ts2dart_Provider */ {provide: AnimationQueue, useClass: AnimationQueue},
       DomSharedStylesHost,
       Testability,
-      BrowserDetails,
-      AnimationBuilder,
       EventManager,
       ELEMENT_PROBE_PROVIDERS
     ];

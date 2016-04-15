@@ -1,5 +1,6 @@
-export {Animation} from './src/animate/animation';
-export {AnimationBuilder} from './src/animate/animation_builder';
-export {BrowserDetails} from './src/animate/browser_details';
-export {CssAnimationBuilder} from './src/animate/css_animation_builder';
-export {CssAnimationOptions} from './src/animate/css_animation_options';
+/**
+ * @module
+ * @description
+ * This module contains the code for performing animations in Angular2.
+ */
+export * from 'angular2/src/core/metadata/animations';

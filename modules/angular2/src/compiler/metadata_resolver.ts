@@ -15,6 +15,7 @@ import {BaseException} from 'angular2/src/facade/exceptions';
 import * as cpl from './compile_metadata';
 import * as md from 'angular2/src/core/metadata/directives';
 import * as dimd from 'angular2/src/core/metadata/di';
+import * as anmd from 'angular2/src/core/metadata/animations';
 import {DirectiveResolver} from './directive_resolver';
 import {PipeResolver} from './pipe_resolver';
 import {ViewResolver} from './view_resolver';
@@ -73,6 +74,41 @@ export class CompileMetadataResolver {
     return sanitizeIdentifier(identifier);
   }
 
+  getAnimationEntryMetadata(entry: anmd.AnimationEntryMetadata): cpl.CompileAnimationEntryMetadata {
+    var defs = entry.definitions.map(def => this.getAnimationStateMetadata(def));
+    return new cpl.CompileAnimationEntryMetadata(entry.name, defs);
+  }
+
+  getAnimationStateMetadata(value: anmd.AnimationStateMetadata): cpl.CompileAnimationStateMetadata {
+    if (value instanceof anmd.AnimationStateDeclarationMetadata) {
+      var styles = this.getAnimationStyleMetadata(value.styles);
+      return new cpl.CompileAnimationStateDeclarationMetadata(value.stateName, styles);
+    } else if (value instanceof anmd.AnimationStateTransitionMetadata) {
+      return new cpl.CompileAnimationStateTransitionMetadata(value.stateChangeExpr, this.getAnimationMetadata(value.animation));
+    }
+    return null;
+  }
+
+  getAnimationStyleMetadata(value: anmd.AnimationStyleMetadata): cpl.CompileAnimationStyleMetadata {
+    return new cpl.CompileAnimationStyleMetadata(value.offset, value.styles);
+  }
+
+  getAnimationMetadata(value: anmd.AnimationMetadata): cpl.CompileAnimationMetadata {
+    if (value instanceof anmd.AnimationStyleMetadata) {
+      return this.getAnimationStyleMetadata(value);
+    } else if (value instanceof anmd.AnimationAnimateMetadata) {
+      return new cpl.CompileAnimationAnimateMetadata(value.timings, value.styles.map(styleEntry => this.getAnimationStyleMetadata(styleEntry)));
+    } else if (value instanceof anmd.AnimationWithStepsMetadata) {
+      var steps = value.steps.map(step => this.getAnimationMetadata(step));
+      if (value instanceof anmd.AnimationGroupMetadata) {
+        return new cpl.CompileAnimationGroupMetadata(steps);
+      } else {
+        return new cpl.CompileAnimationSequenceMetadata(steps);
+      }
+    }
+    return null;
+  }
+
   getDirectiveMetadata(directiveType: Type): cpl.CompileDirectiveMetadata {
     var meta = this._directiveCache.get(directiveType);
     if (isBlank(meta)) {
@@ -86,12 +122,17 @@ export class CompileMetadataResolver {
         var cmpMeta = <md.ComponentMetadata>dirMeta;
         var viewMeta = this._viewResolver.resolve(directiveType);
         assertArrayOfStrings('styles', viewMeta.styles);
+        var animations = isPresent(viewMeta.animations)
+            ? viewMeta.animations.map(e => this.getAnimationEntryMetadata(e))
+            : null;
+
         templateMeta = new cpl.CompileTemplateMetadata({
           encapsulation: viewMeta.encapsulation,
           template: viewMeta.template,
           templateUrl: viewMeta.templateUrl,
           styles: viewMeta.styles,
           styleUrls: viewMeta.styleUrls,
+          animations: animations,
           baseUrl: calcTemplateBaseUrl(this._reflector, directiveType, cmpMeta)
         });
         changeDetectionStrategy = cmpMeta.changeDetection;

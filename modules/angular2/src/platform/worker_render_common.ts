@@ -23,8 +23,6 @@ import {KeyEventsPlugin} from 'angular2/src/platform/dom/events/key_events';
 import {DOCUMENT} from 'angular2/src/platform/dom/dom_tokens';
 import {DomRootRenderer, DomRootRenderer_} from 'angular2/src/platform/dom/dom_renderer';
 import {DomSharedStylesHost, SharedStylesHost} from 'angular2/src/platform/dom/shared_styles_host';
-import {BrowserDetails} from 'angular2/src/animate/browser_details';
-import {AnimationBuilder} from 'angular2/src/animate/animation_builder';
 import {XHR} from 'angular2/compiler';
 import {XHRImpl} from 'angular2/src/platform/browser/xhr_impl';
 import {Testability} from 'angular2/src/core/testability/testability';
@@ -99,8 +97,6 @@ export const WORKER_RENDER_APPLICATION_COMMON: Array<any /*Type | Provider | any
       RenderStore,
       DomSharedStylesHost,
       Testability,
-      BrowserDetails,
-      AnimationBuilder,
       EventManager
     ];
 
