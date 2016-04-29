@@ -61,6 +61,8 @@ export class MessageBasedRenderer {
     broker.registerMethod("setElementStyle",
                           [RenderStoreObject, RenderStoreObject, PRIMITIVE, PRIMITIVE],
                           bind(this._setElementStyle, this));
+    broker.registerMethod("setElementStyles", [RenderStoreObject, RenderStoreObject, PRIMITIVE],
+                          bind(this._setElementStyles, this));
     broker.registerMethod("invokeElementMethod",
                           [RenderStoreObject, RenderStoreObject, PRIMITIVE, PRIMITIVE],
                           bind(this._invokeElementMethod, this));
@@ -144,6 +146,11 @@ export class MessageBasedRenderer {
   private _setElementStyle(renderer: Renderer, renderElement: any, styleName: string,
                            styleValue: string) {
     renderer.setElementStyle(renderElement, styleName, styleValue);
+  }
+
+  private _setElementStyles(renderer: Renderer, renderElement: any,
+                            styles: {[key: string]: string}) {
+    renderer.setElementStyles(renderElement, styles);
   }
 
   private _invokeElementMethod(renderer: Renderer, renderElement: any, methodName: string,

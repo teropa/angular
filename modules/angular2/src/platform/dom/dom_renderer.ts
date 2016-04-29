@@ -11,6 +11,8 @@ import {
   isString
 } from 'angular2/src/facade/lang';
 
+import {StringMapWrapper} from 'angular2/src/facade/collection';
+
 import {BaseException, WrappedException} from 'angular2/src/facade/exceptions';
 import {DomSharedStylesHost} from './shared_styles_host';
 
@@ -218,6 +220,11 @@ export class DomRenderer implements Renderer {
     } else {
       DOM.removeClass(renderElement, className);
     }
+  }
+
+  setElementStyles(renderElement: any, styles: {[key: string]: string}) {
+    StringMapWrapper.forEach(styles,
+                             (value, prop) => this.setElementStyle(renderElement, prop, value));
   }
 
   setElementStyle(renderElement: any, styleName: string, styleValue: string): void {
