@@ -513,7 +513,7 @@ function _fillAnimationAstStartingKeyframes(ast: AnimationAst, collectedStyles: 
 
 function _parseTimeExpression(exp: string | number,
                               errors: AnimationParseError[]): _AnimationTimings {
-  var regex = /^([\.\d]+)(m?s)(?:\s+([\.\d]+)(m?s))?(?:\s+([-a-z]+))?/gi;
+  var regex = /^([\.\d]+)(m?s)(?:\s+([\.\d]+)(m?s))?(?:\s+([-a-z0-9,\.\(\)]+))?/gi;
   var duration: number;
   var delay: number = 0;
   var easing: string = null;
